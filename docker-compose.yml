@@ -1,0 +1,68 @@
+# Sets up infrastructure where Nginx handles TLS and
+# static content. Nginx proxies API requests to the
+# server. The server is connected to a PostgreSQL
+# database.
+#
+# see https://docs.docker.com/compose/compose-file/
+#
+version: '2'
+services:
+   web:
+      restart: always
+      image: nginx
+      volumes:
+         - ./www:/srv/www:ro
+         - ./log:/srv/log:rw
+         - ./certificates:/etc/ssl/certs:ro
+         - ./empty:/var/empty:ro
+         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+         - ./acme-challenge:/srv/acme-challenge:ro
+      links:
+         - api
+      ports:
+         - "80:80"
+         - "443:443"
+      environment:
+         LE_RENEW_HOOK:            'docker kill -s HUP @CONTAINER_NAME@'
+   api:
+      restart: always
+      image: recmo/postgrest
+      links:
+         - dbm
+      environment:
+         POSTGREST_JWT_SECRET:     'Uz5Nlzgo28cGmYgC1yyAhyBmjb'
+         PG_ENV_POSTGRES_USER:     'authenticator'
+         POSTGREST_ANONYMOUS:      'anonymous'
+         PG_ENV_POSTGRES_PASSWORD: 'vGsg4-Nxkn0xpSFRCthXDN'
+         PG_ENV_POSTGRES_DB:       'db'
+         PG_PORT_5432_TCP_ADDR:    'dbm'
+         PG_PORT_5432_TCP_PORT:    '5432'
+         POSTGREST_MAX_ROWS:       '1000000'
+         POSTGREST_POOL:           '200'
+   dbm:
+      restart: always
+      image: postgres:9.5
+      volumes:
+         - ./database:/docker-entrypoint-initdb.d:ro
+         - ./data:/var/lib/postgresql/:rw
+      environment:
+         POSTGRES_DB:              'db'
+         POSTGRES_PASSWORD:        'EmSH7bIXL9si4cWx4Iyw'
+   len:
+      restart: always
+      image: kvaps/letsencrypt-webroot
+      volumes:
+         - /etc/localtime:/etc/localtime:ro
+         - /var/run/docker.sock:/var/run/docker.sock:rw
+         - ./certificates:/etc/letsencrypt:rw
+         - ./acme-challenge:/tmp/acme-challenge:rw
+      links:
+         - web
+      environment:
+         DOMAINS:                  'example.com'
+         EMAIL:                    'len@example.com'
+         WEBROOT_PATH:             '/tmp/acme-challenge'
+         EXP_LIMIT:                '30'
+         CHECK_FREQ:               '30'
+   #log:
+   #   image:

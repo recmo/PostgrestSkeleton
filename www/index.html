@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Example</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+	<link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+
+<header>
+	<nav>
+		<a href="/">Example Blog</a>
+		<button id="button_login" onclick="login()">Log in</button>
+		<button id="button_logout" class="hidden" onclick="logout()">Log out</button>
+	</nav>
+</header>
+
+<main id="start" class="hidden">
+<article class="post">
+	<section>
+		<header>
+			<h1></h1>
+		</header>
+	</section>
+</article>
+</main>
+
+<main id="not_found" class="hidden">
+	<p class="one-column">The request page is not found!</p>
+	<p class="one-column">(it might be under construction, check back later!)</p>
+</main>
+
+<footer><p>Based on the PostgrestSkeleton.</p></footer>
+<script type="text/javascript" src="//cdn.auth0.com/js/lock-9.0.js"></script>
+<script type="text/javascript" src="/script.js"></script>
+</body>
+</html>

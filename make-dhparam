@@ -1,0 +1,2 @@
+#!/bin/sh
+openssl dhparam -out certificates/dhparam.pem 4096
