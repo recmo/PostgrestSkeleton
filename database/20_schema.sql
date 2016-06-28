@@ -2,7 +2,7 @@ BEGIN;
 
 --------------------------------------------------------------------------------
 
-CREATE TABLE post (
+CREATE TABLE posts (
 	id            bigserial   primary key,
 	author        text        not null
 	                          default current_user_id()
@@ -14,19 +14,19 @@ CREATE TABLE post (
 );
 
 -- Anonymous can read all.
-GRANT SELECT ON TABLE post TO anonymous;
+GRANT SELECT ON TABLE posts TO anonymous;
 
 -- Author can insert and modify name and description…
 GRANT SELECT,
 	INSERT (title, contents),
 	UPDATE (title, contents),
 	DELETE
-ON TABLE post TO author;
-GRANT USAGE, SELECT ON SEQUENCE post_id_seq TO post;
+ON TABLE posts TO author;
+GRANT USAGE, SELECT ON SEQUENCE posts_id_seq TO author;
 
 -- …but only of rows that he/she himself created.
-ALTER TABLE post ENABLE ROW LEVEL SECURITY;
-CREATE POLICY author_eigenedit ON post
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY author_eigenedit ON posts
 	USING (TRUE)
 	WITH CHECK (author = current_user_id());
 
@@ -35,7 +35,7 @@ CREATE POLICY author_eigenedit ON post
 CREATE TABLE comments (
 	id            bigserial   primary key,
 	post          bigint      not null
-	                          references post (id)
+	                          references posts (id)
                              on delete cascade
                              on update cascade,
 	author        text        not null
