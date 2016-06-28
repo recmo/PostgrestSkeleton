@@ -12,7 +12,7 @@ services:
       image: nginx
       volumes:
          - ./www:/srv/www:ro
-         - ./log:/srv/log:rw
+         - ./log/web:/var/log:rw
          - ./certificates:/etc/ssl/certs:ro
          - ./empty:/var/empty:ro
          - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
@@ -27,6 +27,8 @@ services:
    api:
       restart: always
       image: recmo/postgrest
+      volumes:
+         - ./log/api:/var/log:rw
       links:
          - dbm
       environment:
@@ -43,6 +45,7 @@ services:
       restart: always
       image: postgres:9.5
       volumes:
+         - ./log/dbm:/var/log:rw
          - ./database:/docker-entrypoint-initdb.d:ro
          - ./data:/var/lib/postgresql/:rw
       environment:
@@ -52,6 +55,7 @@ services:
       restart: always
       image: kvaps/letsencrypt-webroot
       volumes:
+         - ./log/len:/var/log:rw
          - /etc/localtime:/etc/localtime:ro
          - /var/run/docker.sock:/var/run/docker.sock:rw
          - ./certificates:/etc/letsencrypt:rw
