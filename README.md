@@ -20,18 +20,18 @@ Assuming an Ubuntu Xenial 16.04 server.
 	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
 	sudo apt-get purge lxc-docker
 	sudo apt-get update
-	sudo apt-get install linux-image-extra-$(uname -r) git curl docker-engine
+	sudo apt-get install linux-image-extra-$(uname -r) git curl docker-engine openssl
 	curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null
 	sudo chmod +x /usr/local/bin/docker-compose
 	sudo service docker start
 	sudo docker run hello-world
 	docker-compose --version
 	sudo gpasswd -a $USER docker
-
-	sudo mkdir /srv/live.git /srv/live
-	sudo chown :adm /srv/live.git /srv/live
-	sudo chmod g+rwx /srv/live.git /srv/live
+	sudo mkdir -p /srv/live.git /srv/live/certificates
+	sudo chown -R :adm /srv/live.git /srv/live
+	sudo chmod -R g+rwx /srv/live.git /srv/live
 	git init --bare /srv/live.git
+	openssl dhparam -out /srv/live/certificates/dhparam.pem 4096
 
 	git remote add staging staging.example.com:/srv/live.git
 	scp post-receive staging.example.com:/srv/live.git/hooks
