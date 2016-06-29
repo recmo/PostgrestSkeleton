@@ -1,6 +1,44 @@
 #!/bin/bash
 set -e
 
+# Content security policy
+# Note: Add “plugin-types ;” when you add “object-src”
+tr [\t\n] " " <<-'EOD' | read -r -d ' ' CSP
+	sandbox
+		allow-scripts
+		allow-forms
+		allow-same-origin;
+	referrer
+		no-referrer;
+	reflected-xss
+		block;
+	report-uri
+		/api/rpc/csp-report;
+	default-src
+		'none';
+	img-src
+		'self' ;
+	style-src
+		'self'
+		'unsafe-inline'
+		cdnjs.cloudflare.com;
+	font-src
+		'self'
+		cdn.auth0.com
+		cdnjs.cloudflare.com;
+	script-src
+		'self'
+		'unsafe-inline'
+		'unsafe-eval'
+		example.auth0.com
+		cdn.auth0.com
+		code.jquery.com
+		cdnjs.cloudflare.com;
+	connect-src
+		'self'
+		example.auth0.com;
+EOD
+
 cat > /etc/nginx/conf.d/default.conf <<-'EOD'
 	
 	# Override some defaults
@@ -82,9 +120,8 @@ else
 		add_header X-Content-Type-Options "nosniff" always;
 		add_header X-Frame-Options "DENY" always;
 		add_header X-XSS-Protection "1; mode=block" always;
-		add_header Content-Security-Policy "sandbox allow-scripts allow-forms allow-same-origin; referrer no-referrer; reflected-xss block; report-uri /api/rpc/csp-report; default-src 'none'; img-src 'self' ; style-src 'self' cdnjs.cloudflare.com; font-src 'self' cdn.auth0.com cdnjs.cloudflare.com; script-src 'self' example.auth0.com cdn.auth0.com code.jquery.com cdnjs.cloudflare.com; connect-src 'self' example.auth0.com;" always;
+		add_header Content-Security-Policy "CONTENTSECURITYPOLICY" always;
 		add_header Access-Control-Allow-Origin "https://DOMAINNAME" always;
-		# Note: Add “plugin-types ;” when you add “object-src”
 		
 		# Redirect all http to https (except the ACME challenge)
 		server {
@@ -138,6 +175,7 @@ else
 	EOD
 	
 	sed -i "s|DOMAINNAME|${DOMAIN}|g" /etc/nginx/conf.d/default.conf
+	sed -i "s|CONTENTSECURITYPOLICY|${CSP}|g" /etc/nginx/conf.d/default.conf
 	
 fi
 

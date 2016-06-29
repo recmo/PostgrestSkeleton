@@ -45,7 +45,10 @@ Assuming an Ubuntu Xenial 16.04 server.
 
 ## Staging
 
-	docker-compose -f docker-compose.yml -f staging.yml start
+	source site.conf
+	export DOMAIN CERT_EMAIL JWT_SECRET POSTGRES_PASSWORD AUTHENTICATOR_PASSWORD
+	alias dc=docker-compose -f docker-compose.yml -f live.yml 
+	dc stop; dc rm -f; dc create; dc start; dc logs
 
 ## Production
 
