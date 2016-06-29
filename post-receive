@@ -22,6 +22,9 @@ fi
 GIT_WORK_TREE=/srv/live git checkout -f master
 cd /srv/live
 
+# Update post-receive
+cp /srv/live/post-receive /srv/live.git/hooks/post-receive
+
 # Rebuild docker
 docker network create live_default || true
 $dc create
@@ -29,3 +32,7 @@ $dc start
 
 # Reload nginx
 $dc kill -s SIGHUP web
+
+# Reset permissions
+sudo chown -R :adm /srv/live
+sudo chmod -R g+rwX /srv/live
