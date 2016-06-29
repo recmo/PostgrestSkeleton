@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+production=false
+
+echo "Deploying master..."
+
+dc="docker-compose -f docker-compose.yml -f staging.yml"
+
+if [ "$production" = true ] ; then
+	echo "Deploying to production."
+	read -p "Are you sure? [yY]" -n 1 -r
+	if [[ ! $REPLY =~ ^[Yy]$ ]]
+	then
+		echo "Aborting deploy"
+		exit 1
+	fi
+	dc+=" -f production.yml"
+fi
+
+# Update checkout
+GIT_WORK_TREE=/srv/live git checkout -f master
+cd /srv/live
+
+# Rebuild docker
+docker network create live_default
+$dc create
+$dc start
+
+# Reload nginx
+$dc kill -s SIGHUP web

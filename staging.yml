@@ -1,0 +1,18 @@
+version: '2'
+services:
+   web:
+      restart: always
+      volumes:
+         - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      ports:
+         - "80:80"
+         - "443:443"
+   api:
+      restart: always
+   dbm:
+      restart: always
+   len:
+      restart: always
+      environment:
+         DOMAINS:                  'staging.example.com'
+         EMAIL:                    'len@example.com'

@@ -11,6 +11,58 @@ Stack:
 * [Docker](https://www.docker.com/) to containerize.
 * [Docker compose](https://docs.docker.com/compose/) for orchestrating containers.
 
+## Setting up a server
+
+Assuming an Ubuntu Xenial 16.04 server.
+
+	sudo apt-get install apt-transport-https ca-certificates
+	sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+	echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
+	sudo apt-get purge lxc-docker
+	sudo apt-get update
+	sudo apt-get install linux-image-extra-$(uname -r) git curl docker-engine
+	curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null
+	sudo chmod +x /usr/local/bin/docker-compose
+	sudo service docker start
+	sudo docker run hello-world
+	docker-compose --version
+	sudo gpasswd -a $USER docker
+
+	sudo mkdir /srv/live.git /srv/live
+	sudo chown :adm /srv/live.git /srv/live
+	sudo chmod g+rwx /srv/live.git /srv/live
+	git init --bare /srv/live.git
+
+	git remote add staging staging.example.com:/srv/live.git
+	scp post-receive staging.example.com:/srv/live.git/hooks
+	git push staging
+
+## Local testing
+
+	docker-compose start
+
+## Staging
+
+	docker-compose -f docker-compose.yml -f staging.yml start
+
+## Production
+
+	docker-compose -f docker-compose.yml -f staging.yml  -f production.yml start
+
+## Using
+
+
+
+
+### Staging
+
+	
+
+### Deployment
+
+	docker-compose -f docker-compose.yml -f production.yml start
+
+
 ## Dependencies
 
 Make sure you have a recent version of `docker`, at least version *1.10.0*.

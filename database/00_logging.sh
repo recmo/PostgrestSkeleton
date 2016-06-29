@@ -1,12 +1,12 @@
-mkdir -p /var/log/postgresql
-chown postgres:postgres /var/log/postgresql
+chown :postgres /var/log
+chmod g+rw /var/log
 echo "
 
 # LOG LOCATION
 
 log_destination = stderr
 logging_collector = true
-log_directory = '/var/log/postgresql'
+log_directory = '/var/log/'
 
 # ERROR REPORTING AND LOGGING
 
