@@ -31,7 +31,7 @@ if [ \( -z "$DOMAINS" \) -o \( ! -f $certfile \) ]; then
 			# ACME challenges for letsencrypt
 			location /.well-known/acme-challenge {
 				default_type text/plain;
-				root /tmp/acme-challenge;
+				root /srv/acme-challenge;
 				try_files $uri =404;
 			}
 			
@@ -94,7 +94,7 @@ else
 			# ACME challenges for letsencrypt
 			location /.well-known/acme-challenge {
 				default_type text/plain;
-				root /tmp/acme-challenge;
+				root /srv/acme-challenge;
 				try_files $uri =404;
 			}
 			

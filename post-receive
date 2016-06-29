@@ -23,7 +23,7 @@ GIT_WORK_TREE=/srv/live git checkout -f master
 cd /srv/live
 
 # Rebuild docker
-docker network create live_default
+docker network create live_default || true
 $dc create
 $dc start
 
