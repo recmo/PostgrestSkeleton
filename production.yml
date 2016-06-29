@@ -1,9 +1,0 @@
-version: '2'
-services:
-   web:
-      environment:
-         DOMAINS:                  'example.com'
-   len:
-      environment:
-         DOMAINS:                  'example.com'
-         EMAIL:                    'len@example.com'

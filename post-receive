@@ -1,25 +1,22 @@
 #!/bin/bash
 set -e
+source /srv/live.git/site.conf
 
-production=false
+echo "Deploying $BRANCH to $DOMAIN..."
 
-echo "Deploying master..."
+dc="docker-compose -f docker-compose.yml -f live.yml"
 
-dc="docker-compose -f docker-compose.yml -f staging.yml"
-
-if [ "$production" = true ] ; then
-	echo "Deploying to production."
-	read -p "Are you sure? [yY]" -n 1 -r
+if [ "$PRODUCTION" = true ] ; then
+	read -p "This is a production deployment. Are you sure? [yY]" -n 1 -r
 	if [[ ! $REPLY =~ ^[Yy]$ ]]
 	then
 		echo "Aborting deploy"
 		exit 1
 	fi
-	dc+=" -f production.yml"
 fi
 
 # Update checkout
-GIT_WORK_TREE=/srv/live git checkout -f master
+GIT_WORK_TREE=/srv/live git checkout -f $BRANCH
 cd /srv/live
 
 # Update post-receive

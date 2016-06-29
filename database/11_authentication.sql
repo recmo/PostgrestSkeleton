@@ -8,8 +8,6 @@ BEGIN;
 -- HTTP request. If the client included no (or an invalid) JWT
 -- then PostgREST selects the role "anonymous".
 
-CREATE USER authenticator WITH NOINHERIT LOGIN
-	PASSWORD 'vGsg4-Nxkn0xpSFRCthXDN';
 CREATE ROLE anonymous;
 CREATE ROLE author;
 GRANT anonymous, author TO authenticator;

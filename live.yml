@@ -6,7 +6,7 @@ services:
          - "80:80"
          - "443:443"
       environment:
-         DOMAINS:                  'staging.example.com'
+         DOMAIN:     "${DOMAIN}"
    api:
       restart: always
    dbm:
@@ -14,5 +14,5 @@ services:
    len:
       restart: always
       environment:
-         DOMAINS:                  'staging.example.com'
-         EMAIL:                    'len@example.com'
+         DOMAINS:    "${DOMAIN}"
+         EMAIL:      "${CERT_EMAIL}"

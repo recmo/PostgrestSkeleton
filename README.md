@@ -35,6 +35,8 @@ Assuming an Ubuntu Xenial 16.04 server.
 
 	git remote add staging staging.example.com:/srv/live.git
 	scp post-receive staging.example.com:/srv/live.git/hooks
+	nano site.conf
+	scp site.conf staging.example.com:/srv/live.git/
 	git push staging
 
 ## Local testing

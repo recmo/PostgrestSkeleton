@@ -16,8 +16,8 @@ EOD
 
 # Check if we have $DOMAINS, if not, skip the TLS
 # Check if we have certificates, if not, skip the TLS
-certfile="/etc/ssl/certs/live/$DOMAINS/privkey.pem"
-if [ \( -z "$DOMAINS" \) -o \( ! -f $certfile \) ]; then
+certfile="/etc/ssl/certs/live/${DOMAIN}/privkey.pem"
+if [ \( -z "${DOMAIN}" \) -o \( ! -f $certfile \) ]; then
 	
 	echo "WARNING: No certificate found. Starting with no TLS configuration"
 	
@@ -137,7 +137,7 @@ else
 		
 	EOD
 	
-	sed -i "s|DOMAINNAME|$DOMAINS|g" /etc/nginx/conf.d/default.conf
+	sed -i "s|DOMAINNAME|${DOMAIN}|g" /etc/nginx/conf.d/default.conf
 	
 fi
 

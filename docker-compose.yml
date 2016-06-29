@@ -30,10 +30,10 @@ services:
       links:
          - dbm
       environment:
-         POSTGREST_JWT_SECRET:     'Uz5Nlzgo28cGmYgC1yyAhyBmjb'
+         POSTGREST_JWT_SECRET:     '${JWT_SECRET}'
          PG_ENV_POSTGRES_USER:     'authenticator'
          POSTGREST_ANONYMOUS:      'anonymous'
-         PG_ENV_POSTGRES_PASSWORD: 'vGsg4-Nxkn0xpSFRCthXDN'
+         PG_ENV_POSTGRES_PASSWORD: '${AUTHENTICATOR_PASSWORD}'
          PG_ENV_POSTGRES_DB:       'db'
          PG_PORT_5432_TCP_ADDR:    'dbm'
          PG_PORT_5432_TCP_PORT:    '5432'
@@ -47,7 +47,9 @@ services:
          - ./data:/var/lib/postgresql/:rw
       environment:
          POSTGRES_DB:              'db'
-         POSTGRES_PASSWORD:        'EmSH7bIXL9si4cWx4Iyw'
+         POSTGRES_USER:            'postgres'
+         POSTGRES_PASSWORD:        '${POSTGRES_PASSWORD}'
+         AUTHENTICATOR_PASSWORD:   '${AUTHENTICATOR_PASSWORD}'
    len:
       image: kvaps/letsencrypt-webroot
       volumes:

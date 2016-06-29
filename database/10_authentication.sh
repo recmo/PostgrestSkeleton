@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+psql -v ON_ERROR_STOP=1 --username "${POSTGRES_USER}" <<-EOD
+	BEGIN;
+	CREATE USER authenticator WITH NOINHERIT LOGIN
+		 PASSWORD '${AUTHENTICATOR_PASSWORD}';
+	COMMIT;
+EOD
