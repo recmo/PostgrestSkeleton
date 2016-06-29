@@ -1,19 +1,24 @@
 #!/bin/bash
 set -e
 source /srv/live.git/site.conf
+export DOMAIN CERT_EMAIL JWT_SECRET POSTGRES_PASSWORD AUTHENTICATOR_PASSWORD
 
-echo "Deploying $BRANCH to $DOMAIN..."
+# Get the pushed commit and branch
+read -a ref
+IFS='/' read -ra REF <<< "${ref[2]}"
+cur_branch="${REF[2]}"
 
-dc="docker-compose -f docker-compose.yml -f live.yml"
-
-if [ "$PRODUCTION" = true ] ; then
-	read -p "This is a production deployment. Are you sure? [yY]" -n 1 -r
-	if [[ ! $REPLY =~ ^[Yy]$ ]]
-	then
-		echo "Aborting deploy"
-		exit 1
-	fi
+# Check if the push was to the deploy branch
+if [ "$cur_branch" != "$BRANCH" ] ; then
+	echo "Not pushed to master, not deploying"
+	exit 0
+else
+	echo "Deploying $BRANCH to $DOMAIN..."
 fi
+
+# Reset permissions
+sudo chown -R :adm /srv/live
+sudo chmod -R g+rwX /srv/live
 
 # Update checkout
 GIT_WORK_TREE=/srv/live git checkout -f $BRANCH
@@ -24,6 +29,7 @@ cp /srv/live/post-receive /srv/live.git/hooks/post-receive
 
 # Rebuild docker
 docker network create live_default || true
+dc="docker-compose -f docker-compose.yml -f live.yml"
 $dc create
 $dc start
 
