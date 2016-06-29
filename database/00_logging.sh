@@ -1,5 +1,5 @@
-chown :postgres /var/log
-chmod g+rw /var/log
+chown -R :postgres /var/log
+chmod -R g+rw /var/log
 echo "
 
 # LOG LOCATION
