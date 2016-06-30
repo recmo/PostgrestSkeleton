@@ -1,5 +1,4 @@
 #!/bin/bash
-
-BACKUP=/srv/backup-`date -I`.sql
-docker exec -ti -u postgres example_dbm_1 pg_dump -a --insert db > $BACKUP
+BACKUP=/srv/backups/backup-`date -I`.sql
+docker exec -u postgres live_dbm_1 pg_dump -a --insert db > $BACKUP
 chmod -w $BACKUP

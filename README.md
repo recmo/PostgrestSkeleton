@@ -27,11 +27,12 @@ Assuming an Ubuntu Xenial 16.04 server.
 	sudo docker run hello-world
 	docker-compose --version
 	sudo gpasswd -a $USER docker
-	sudo mkdir -p /srv/live.git /srv/live/certificates
-	sudo chown -R :adm /srv/live.git /srv/live
-	sudo chmod -R g+rwx /srv/live.git /srv/live
+	sudo mkdir -p /srv/live.git /srv/live/certificates /srv/backups
+	sudo chown -R :adm /srv/live.git /srv/live /srv/backups
+	sudo chmod -R g+rwx /srv/live.git /srv/live /srv/backups
 	git init --bare /srv/live.git
 	openssl dhparam -out /srv/live/certificates/dhparam.pem 4096
+	crontab -e # Add '00 00 * * * /srv/live/make-backup'
 
 	git remote add staging staging.example.com:/srv/live.git
 	scp post-receive staging.example.com:/srv/live.git/hooks
