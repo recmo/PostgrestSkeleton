@@ -24,7 +24,7 @@ services:
          LE_RENEW_HOOK:            'docker kill -s HUP @CONTAINER_NAME@'
       command: /nginx-init
    api:
-      image: recmo/postgrest
+      image: begriffs/postgrest
       volumes:
          - ./log/api:/var/log:rw
       links:
