@@ -7,12 +7,12 @@ CREATE TABLE hidden.csp_reports (
 	report        jsonb     not null
 );
 
-CREATE FUNCTION csp_report(report json) RETURNS void
+CREATE FUNCTION csp_report(csp_report json) RETURNS void
 LANGUAGE SQL
 SECURITY DEFINER
 AS $$
 	INSERT INTO hidden.csp_reports (report)
-	VALUES (report)
+	VALUES (csp_report)
 $$;
 
 GRANT EXECUTE ON FUNCTION csp_report(json) TO anonymous;

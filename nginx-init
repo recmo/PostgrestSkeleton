@@ -3,7 +3,7 @@ set -e
 
 # Content security policy
 # Note: Add “plugin-types ;” when you add “object-src”
-tr [\t\n] " " <<-'EOD' | read -r -d ' ' CSP
+IFS='' read -r -d '' CSP <<-'EOD' || true
 	sandbox
 		allow-scripts
 		allow-forms
@@ -13,14 +13,13 @@ tr [\t\n] " " <<-'EOD' | read -r -d ' ' CSP
 	reflected-xss
 		block;
 	report-uri
-		/api/rpc/csp-report;
+		/api/rpc/csp_report;
 	default-src
 		'none';
 	img-src
 		'self' ;
 	style-src
 		'self'
-		'unsafe-inline'
 		cdnjs.cloudflare.com;
 	font-src
 		'self'
@@ -28,8 +27,6 @@ tr [\t\n] " " <<-'EOD' | read -r -d ' ' CSP
 		cdnjs.cloudflare.com;
 	script-src
 		'self'
-		'unsafe-inline'
-		'unsafe-eval'
 		example.auth0.com
 		cdn.auth0.com
 		code.jquery.com
@@ -39,6 +36,9 @@ tr [\t\n] " " <<-'EOD' | read -r -d ' ' CSP
 		example.auth0.com;
 EOD
 
+# Remove newlines
+CSP=$(echo "$CSP" | tr '[\t\n]' ' ')
+
 cat > /etc/nginx/conf.d/default.conf <<-'EOD'
 	
 	# Override some defaults
@@ -47,8 +47,8 @@ cat > /etc/nginx/conf.d/default.conf <<-'EOD'
 	underscores_in_headers on;
 	
 	# Log to files
+	error_log /var/log/nginx/error.log warn;
 	access_log /var/log/nginx/access.log;
-	error_log /var/log/nginx/error.log;
 	
 EOD
 
