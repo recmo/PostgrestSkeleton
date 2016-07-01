@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+if [ ! -f "$1" ] ; then
+	echo "Usage: $0 backupfile"
+	exit 1
+fi
+echo "Restoring $1..."
+
+echo "Clearing database..."
+docker exec -iu postgres live_dbm_1 psql -d db <<-'EOD'
+	
+	DELETE FROM cases;
+	DELETE FROM dilemmas;
+	DELETE FROM hidden.users;
+	
+EOD
+
+echo "Importing backup..."
+docker exec -iu postgres live_dbm_1 psql -d db < $1
+
+echo "Done!"
+
